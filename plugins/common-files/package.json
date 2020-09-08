@@ -1,0 +1,7 @@
+{
+    "name": "@vinton/common-files",
+    "main": "./common-files.js",
+    "dependencies": {
+        "glob": "^7.1.6"
+    }
+}

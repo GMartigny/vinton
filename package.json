@@ -1,0 +1,40 @@
+{
+    "name": "vinton",
+    "version": "0.0.0",
+    "bin": "./src/index.js",
+    "description": "",
+    "scripts": {
+        "build": "webpack -p",
+        "dev": "webpack -d --watch",
+        "test": "ava"
+    },
+    "eslintConfig": {
+        "extends": "@gmartigny/eslint-config"
+    },
+    "author": "GMartigny",
+    "license": "MIT",
+    "dependencies": {
+        "@vinton/common-files": "file:plugins/common-files",
+        "@vinton/license-year": "file:plugins/license-year",
+        "cosmiconfig": "^7.0.0",
+        "delete": "^1.1.0",
+        "express": "^4.17.1",
+        "open": "^7.2.1"
+    },
+    "devDependencies": {
+        "@gmartigny/eslint-config": "^1.6.0",
+        "@mdi/font": "^5.5.55",
+        "ava": "^3.12.1",
+        "css-loader": "^4.2.2",
+        "eslint": "^7.8.1",
+        "file-loader": "^6.1.0",
+        "html-webpack-plugin": "^4.4.1",
+        "mini-css-extract-plugin": "^0.11.0",
+        "vue": "^2.6.12",
+        "vue-loader": "^15.9.3",
+        "vue-template-compiler": "^2.6.12",
+        "vuetify": "^2.3.10",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12"
+    }
+}

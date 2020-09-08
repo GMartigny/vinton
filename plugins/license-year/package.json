@@ -1,0 +1,4 @@
+{
+    "name": "@vinton/license-year",
+    "main": "./license-year.js"
+}

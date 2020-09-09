@@ -44,6 +44,7 @@ module.exports = (root, plugins) => ({
         const results = await Promise.all(plugins.map(({ check }) => check(name)));
         return results
             .flat()
+            .filter(a => a)
             .sort((a, b) => a.priority - b.priority);
     },
 

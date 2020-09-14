@@ -26,8 +26,17 @@
                     @click="remove"
                     :loading="loadRemove"
                     class="float-right"
+                    title="Delete project"
                 >
                     <v-icon>mdi-delete</v-icon>
+                </v-btn>
+                <v-btn
+                    icon
+                    @click="hide"
+                    class="float-right"
+                >
+                    <v-icon v-if="data.hidden" title="Show project">mdi-eye-off</v-icon>
+                    <v-icon v-else title="Hide project">mdi-eye</v-icon>
                 </v-btn>
             </div>
         </v-expansion-panel-header>
@@ -40,6 +49,7 @@
                     :key="index"
                     :project-name="data.name"
                     :data="check"
+                    @fixed="fixed(index)"
                 ></Check>
             </v-list>
         </v-expansion-panel-content>
@@ -65,12 +75,34 @@
         }),
 
         methods: {
-            async remove () {
+            hide (event) {
+                event.stopPropagation();
+                this.data = {
+                    ...this.data,
+                    hidden: !this.data.hidden,
+                };
+                this.$emit("hide", this.data);
+            },
+
+            async remove (event) {
+                event.stopPropagation();
                 if (!this.loadRemove) {
                     this.loadRemove = true;
                     await fetch(`/rm?name=${this.data.name}`);
                     this.$emit("removed", this.data);
                 }
+            },
+
+            async fixed (index) {
+                this.checks.splice(index, 1, {
+                    message: "Fixed",
+                    isFixable: false,
+                    priority: 0,
+                });
+
+                setTimeout(() => {
+                    this.checks.splice(index, 1);
+                }, 1000);
             }
         },
 

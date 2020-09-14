@@ -1,13 +1,21 @@
 <template>
     <v-app>
         <v-container>
-            <v-text-field
-                solo
-                placeholder="Search"
-                clearable
-                @keyup="search"
-                @click:clear="search"
-            ></v-text-field>
+            <v-row>
+                <v-col cols="10">
+                    <v-text-field
+                        solo
+                        :value="search"
+                        placeholder="Search"
+                        clearable
+                        @keyup="research"
+                        @click:clear="research"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                    <v-checkbox :value="showHidden"></v-checkbox>
+                </v-col>
+            </v-row>
             <v-expansion-panels
                 v-if="projectsList"
                 multiple
@@ -16,8 +24,9 @@
                     v-for="project in projectsList"
                     :key="project.name"
                     :data="project"
+                    @hide="hide"
                     @removed="removed"
-                    v-if="!project.hidden"
+                    v-if="!project.filtered && !project.hidden"
                 ></Project>
             </v-expansion-panels>
         </v-container>
@@ -35,33 +44,53 @@
         },
 
         data: () => ({
+            search: "",
+            searchTimeout: null,
+            showHidden: false,
+            hidden: {},
             projectsList: [],
         }),
 
         methods: {
-            search ({ target }) {
-                if (this.projectsList && target.value !== this.seachedValue) {
-                    if (this.seachTimeout) {
-                        clearTimeout(this.seachTimeout);
+            research ({ target }) {
+                if (this.projectsList && target.value !== this.search) {
+                    if (this.searchTimeout) {
+                        clearTimeout(this.searchTimeout);
                     }
 
                     const search = new RegExp(target.value || ".", "i");
-                    this.seachTimeout = setTimeout(() => {
-                        this.projectsList = this.projectsList.map(({ name }) => ({
-                            name,
-                            hidden: !search.test(name),
-                        }));
-                        this.seachedValue = target.value;
+                    this.searchTimeout = setTimeout(() => {
+                        this.projectsList.forEach(({ name }) => this.settings.hidden[name] = !search.test(name));
+                        this.search = target.value;
                     }, 100);
                 }
             },
 
-            removed (name) {
-                this.projectsList.splice(this.projectsList.indexOf(name), 1);
+            hide (project) {
+                this.hidden[project.name] = project.hidden;
+
+                localStorage.setItem("vinton", JSON.stringify({
+                    search: this.search,
+                    showHidden: this.showHidden,
+                    hidden: this.hidden,
+                }));
+            },
+
+            removed (project) {
+                this.projectsList.splice(this.projectsList.indexOf(project), 1);
             }
         },
 
         async mounted () {
+            const local = localStorage.getItem("vinton");
+            if (local) {
+                const settings = JSON.parse(local);
+
+                this.search = settings.search;
+                this.showHidden = settings.showHidden;
+                this.hidden = settings.hidden;
+            }
+
             const result = await fetch("/ls?onlyDir");
             this.projectsList = await result.json();
         }

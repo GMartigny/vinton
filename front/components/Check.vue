@@ -10,7 +10,7 @@
         </v-list-item-title>
         <v-spacer></v-spacer>
         <v-btn
-            v-if="data.fixable"
+            v-if="data.isFixable"
             :color="color"
             @click="fix"
             :loading="isLoading"
@@ -42,20 +42,15 @@
             },
 
             icon () {
-                return ["mdi-thumb-up", "mdi-alarm-light", "mdi-alert", "mdi-information", ][this.data.priority];
+                return ["mdi-thumb-up", "mdi-alarm-light", "mdi-alert", "mdi-information"][this.data.priority];
             },
         },
 
         methods: {
             async fix () {
                 this.isLoading = true;
-                await fetch(`/fix?name=${this.projectName}&check=${this.data.name}`);
-                this.data = {
-                    ...this.data,
-                    message: "Fixed",
-                    fixable: false,
-                    priority: 0,
-                };
+                await fetch(`/fix?plugin=${this.data.id}&name=${this.projectName}`);
+                this.$emit("fixed")
                 this.isLoading = false;
             }
         },

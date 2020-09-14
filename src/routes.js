@@ -15,7 +15,7 @@ const del = require("delete").promise;
 /**
  * Get all routes
  * @param {string} root -
- * @param {Array<VintonPlugin>} plugins -
+ * @param {Object<VintonPlugin>} plugins -
  * @return {API}
  */
 module.exports = (root, plugins) => ({
@@ -23,7 +23,7 @@ module.exports = (root, plugins) => ({
      * List
      * @return {Promise<Array<string>>}
      */
-    ls: async ({ onlyDir }) => {
+    async ls ({ onlyDir }) {
         const children = (await readdir(root)).map(name => ({
             name,
         }));
@@ -37,19 +37,36 @@ module.exports = (root, plugins) => ({
     },
 
     /**
-     * check
+     * Check
      * @return {Promise<Array<string>>}
      */
-    check: async ({ name }) => {
-        const results = await Promise.all(plugins.map(({ check }) => check(name)));
+    async check ({ name }) {
+        const promises = Object.keys(plugins)
+            .map(id => (async () => {
+                const result = await plugins[id]?.check(name);
+                return (Array.isArray(result) ? result : [result])
+                    .filter(check => check)
+                    .map(check => ({
+                        id,
+                        ...check,
+                    }));
+            })());
+        const results = await Promise.all(promises);
         return results
             .flat()
-            .filter(a => a)
             .sort((a, b) => a.priority - b.priority);
     },
 
     /**
-     * remove
+     * Fix
+     * @return {Promise}
+     */
+    fix ({ plugin, name }) {
+        return plugins[plugin]?.fix?.(name);
+    },
+
+    /**
+     * Remove
      * @return {Promise}
      */
     rm: ({ name }) => del(name),

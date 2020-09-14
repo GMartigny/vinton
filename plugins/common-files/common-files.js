@@ -1,30 +1,33 @@
 const glob = require("glob");
+const { Check, priorities } = require("../../src/export");
 
 const commons = [
     {
         file: ".gitignore",
-        priority: 3,
+        priority: priorities.INFOS,
     },
     {
         file: "license",
-        priority: 2,
+        priority: priorities.WARNING,
     },
     {
         file: "readme",
-        priority: 1,
+        priority: priorities.URGENT,
     },
     {
         file: "src",
-        priority: 3,
+        priority: priorities.INFOS,
     },
     {
         file: "test",
-        priority: 3,
+        priority: priorities.INFOS,
     },
 ];
 
 module.exports = {
-    check: async (name) => {
+    name: "common-files",
+
+    async check (name) {
         const checks = await Promise.all(commons.map(({ file }) => new Promise((resolve) => {
             const path = `${name}/${file}*`;
             glob(path, {
@@ -37,11 +40,6 @@ module.exports = {
 
         return commons
             .filter((_, index) => !checks[index])
-            .map(({ file, priority }) => ({
-                name: "common-file",
-                message: `Missing ${file}`,
-                priority,
-                fixable: false,
-            }));
+            .map(({ file, priority }) => new Check(`Missing ${file}`, priority));
     },
 };

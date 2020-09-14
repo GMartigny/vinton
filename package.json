@@ -14,8 +14,10 @@
     "author": "GMartigny",
     "license": "MIT",
     "dependencies": {
+        "@vinton/clean-git": "file:plugins/clean-git",
         "@vinton/common-files": "file:plugins/common-files",
         "@vinton/license-year": "file:plugins/license-year",
+        "@vinton/node-modules": "file:plugins/node-modules",
         "cosmiconfig": "^7.0.0",
         "delete": "^1.1.0",
         "express": "^4.17.1",

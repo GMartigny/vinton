@@ -1,12 +1,15 @@
 const { resolve } = require("path");
 const { readFile } = require("fs").promises;
+const { Check, priorities } = require("../../src/export");
 
 /**
  *
  * @type {VintonPlugin}
  */
 module.exports = {
-    check: async (name) => {
+    name: "license-year",
+
+    async check (name) {
         const path = resolve(process.cwd(), name, "license");
 
         let license;
@@ -23,10 +26,7 @@ module.exports = {
             const currentYear = new Date().getFullYear();
 
             if (year !== currentYear) {
-                return {
-                    message: "Copyright year is not up-to-date",
-                    priority: 2,
-                };
+                return new Check("Copyright year is not up-to-date", priorities.WARNING);
             }
         }
 

@@ -1,0 +1,7 @@
+{
+    "name": "@vinton/node-modules",
+    "main": "node-modules.js",
+    "dependencies": {
+        "delete": "^1.1.0"
+    }
+}

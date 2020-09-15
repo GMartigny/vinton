@@ -1,0 +1,6 @@
+.idea/
+front/
+media/
+node_modules/
+test/
+webpack.config.js

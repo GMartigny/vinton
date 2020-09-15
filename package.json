@@ -6,7 +6,8 @@
     "scripts": {
         "build": "webpack -p",
         "dev": "webpack -d --watch",
-        "test": "ava"
+        "test": "ava",
+        "prepublishOnly": "npm run build"
     },
     "eslintConfig": {
         "extends": "@gmartigny/eslint-config"

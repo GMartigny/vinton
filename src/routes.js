@@ -24,15 +24,13 @@ module.exports = (root, plugins) => ({
      * @return {Promise<Array<string>>}
      */
     async ls ({ onlyDir }) {
-        const children = (await readdir(root)).map(name => ({
-            name,
-        }));
+        const children = await readdir(root);
 
         if (onlyDir === undefined) {
             return children;
         }
 
-        const stats = await Promise.all(children.map(({ name }) => stat(name)));
+        const stats = await Promise.all(children.map(name => stat(name)));
         return children.filter((_, index) => stats[index].isDirectory());
     },
 

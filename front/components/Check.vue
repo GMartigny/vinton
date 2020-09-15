@@ -1,14 +1,14 @@
 <template>
     <v-list-item>
         <v-list-item-icon>
-            <v-icon :class="{ [`${color}--text`]: true }">
+            <v-icon :class="css">
                 {{ icon }}
             </v-icon>
         </v-list-item-icon>
-        <v-list-item-title :class="{ [`${color}--text`]: true }">
+        <v-list-item-title :class="css">
             {{ data.message }}
         </v-list-item-title>
-        <v-spacer></v-spacer>
+        <v-spacer/>
         <v-btn
             v-if="data.isFixable"
             :color="color"
@@ -37,6 +37,12 @@
         }),
 
         computed: {
+            css () {
+                return {
+                    [`${this.color}--text`]: true,
+                };
+            },
+
             color () {
                 return ["success", "error", "warning", "primary"][this.data.priority];
             },

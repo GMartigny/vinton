@@ -10,24 +10,32 @@
                         clearable
                         @keyup="research"
                         @click:clear="research"
-                    ></v-text-field>
+                    />
                 </v-col>
                 <v-col cols="2">
-                    <v-checkbox :value="showHidden"></v-checkbox>
+                    <v-switch
+                        v-model="showHidden"
+                        label="Show hidden"
+                        @change="save"
+                    />
                 </v-col>
             </v-row>
             <v-expansion-panels
                 v-if="projectsList"
                 multiple
             >
-                <Project
-                    v-for="project in projectsList"
-                    :key="project.name"
-                    :data="project"
-                    @hide="hide"
-                    @removed="removed"
-                    v-if="!project.filtered && !project.hidden"
-                ></Project>
+                <v-expand-transition
+                    v-for="name in projectsList"
+                    :key="name"
+                >
+                    <Project
+                        :name="name"
+                        :hidden="hidden[name]"
+                        @hide="hide"
+                        @removed="removed"
+                        v-show="!isHidden(name)"
+                    />
+                </v-expand-transition>
             </v-expansion-panels>
         </v-container>
     </v-app>
@@ -51,33 +59,47 @@
             projectsList: [],
         }),
 
+        computed: {
+            isHidden () {
+                const vm = this;
+                const search = new RegExp(this.search || ".", "i");
+                return name => !search.test(name) || (vm.hidden[name] && !vm.showHidden);
+            },
+        },
+
         methods: {
             research ({ target }) {
-                if (this.projectsList && target.value !== this.search) {
+                if (target.value !== this.search) {
                     if (this.searchTimeout) {
                         clearTimeout(this.searchTimeout);
                     }
 
-                    const search = new RegExp(target.value || ".", "i");
                     this.searchTimeout = setTimeout(() => {
-                        this.projectsList.forEach(({ name }) => this.settings.hidden[name] = !search.test(name));
                         this.search = target.value;
-                    }, 100);
+                        this.save();
+                    }, 200);
                 }
             },
 
-            hide (project) {
-                this.hidden[project.name] = project.hidden;
+            hide (name) {
+                this.hidden = {
+                    ...this.hidden,
+                    [name]: !this.hidden[name],
+                };
 
+                this.save();
+            },
+
+            removed (name) {
+                this.projectsList.splice(this.projectsList.indexOf(name), 1);
+            },
+
+            save () {
                 localStorage.setItem("vinton", JSON.stringify({
                     search: this.search,
                     showHidden: this.showHidden,
                     hidden: this.hidden,
                 }));
-            },
-
-            removed (project) {
-                this.projectsList.splice(this.projectsList.indexOf(project), 1);
             }
         },
 

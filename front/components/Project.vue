@@ -1,10 +1,10 @@
 <template>
-    <v-expansion-panel :readonly="!(checks && checks.length)">
+    <v-expansion-panel :readonly="!checks.length">
         <v-expansion-panel-header>
             <div>
                 <v-badge
                     inline
-                    :value="checks && checks.length"
+                    :value="loadChecks || checks.length"
                 >
                     <template v-slot:badge>
                         <v-progress-circular
@@ -17,7 +17,7 @@
                             {{ checks.length }}
                         </div>
                     </template>
-                    {{ data.name }}
+                    {{ name }}
                 </v-badge>
             </div>
             <div class="action">
@@ -35,22 +35,20 @@
                     @click="hide"
                     class="float-right"
                 >
-                    <v-icon v-if="data.hidden" title="Show project">mdi-eye-off</v-icon>
+                    <v-icon v-if="hidden" title="Show project">mdi-eye-off</v-icon>
                     <v-icon v-else title="Hide project">mdi-eye</v-icon>
                 </v-btn>
             </div>
         </v-expansion-panel-header>
-        <v-expansion-panel-content
-            v-if="checks"
-        >
+        <v-expansion-panel-content v-if="checks">
             <v-list>
                 <Check
                     v-for="(check, index) in checks"
                     :key="index"
-                    :project-name="data.name"
+                    :project-name="name"
                     :data="check"
                     @fixed="fixed(index)"
-                ></Check>
+                />
             </v-list>
         </v-expansion-panel-content>
     </v-expansion-panel>
@@ -62,14 +60,14 @@
     export default {
         name: "Project",
 
-        props: ["data"],
+        props: ["name", "hidden"],
 
         components: {
             Check,
         },
 
         data: () => ({
-            checks: null,
+            checks: [],
             loadChecks: true,
             loadRemove: false,
         }),
@@ -77,19 +75,15 @@
         methods: {
             hide (event) {
                 event.stopPropagation();
-                this.data = {
-                    ...this.data,
-                    hidden: !this.data.hidden,
-                };
-                this.$emit("hide", this.data);
+                this.$emit("hide", this.name);
             },
 
             async remove (event) {
                 event.stopPropagation();
                 if (!this.loadRemove) {
                     this.loadRemove = true;
-                    await fetch(`/rm?name=${this.data.name}`);
-                    this.$emit("removed", this.data);
+                    await fetch(`/rm?name=${this.name}`);
+                    this.$emit("removed", this.name);
                 }
             },
 
@@ -107,7 +101,8 @@
         },
 
         async mounted () {
-            const result = await fetch(`/check?name=${this.data.name}`);
+            await new Promise(resolve => setTimeout(() => resolve(), 2000));
+            const result = await fetch(`/check?name=${this.name}`);
             this.checks = await result.json();
             this.loadChecks = false;
         },

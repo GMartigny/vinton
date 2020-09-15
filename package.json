@@ -2,7 +2,12 @@
     "name": "vinton",
     "version": "0.2.0",
     "bin": "./src/index.js",
-    "description": "",
+    "description": "Global project manager",
+    "files": [
+        "dist",
+        "plugins",
+        "src"
+    ],
     "scripts": {
         "build": "webpack -p",
         "dev": "webpack -d --watch",

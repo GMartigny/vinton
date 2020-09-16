@@ -3,6 +3,11 @@
     "version": "0.2.1",
     "bin": "./src/index.js",
     "description": "Global project manager",
+    "keywords": [
+        "GUI",
+        "health",
+        "check"
+    ],
     "files": [
         "dist",
         "plugins",
@@ -19,6 +24,14 @@
     },
     "author": "GMartigny",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GMartigny/vinton.git"
+    },
+    "bugs": {
+        "url": "https://github.com/GMartigny/vinton/issues"
+    },
+    "homepage": "https://github.com/GMartigny/vinton#readme",
     "dependencies": {
         "@vinton/clean-git": "file:plugins/clean-git",
         "@vinton/common-files": "file:plugins/common-files",

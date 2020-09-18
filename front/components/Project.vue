@@ -1,20 +1,20 @@
 <template>
-    <v-expansion-panel :readonly="!checks.length">
+    <v-expansion-panel :readonly="!alerts.length">
         <v-expansion-panel-header>
             <div>
                 <v-badge
                     inline
-                    :value="loadChecks || checks.length"
+                    :value="loadAlerts || alerts.length"
                 >
                     <template v-slot:badge>
                         <v-progress-circular
                             indeterminate
                             size="10"
                             width="2"
-                            v-if="loadChecks"
+                            v-if="loadAlerts"
                         ></v-progress-circular>
                         <div v-else>
-                            {{ checks.length }}
+                            {{ alerts.length }}
                         </div>
                     </template>
                     {{ name }}
@@ -40,10 +40,10 @@
                 </v-btn>
             </div>
         </v-expansion-panel-header>
-        <v-expansion-panel-content v-if="checks">
+        <v-expansion-panel-content v-if="alerts.length">
             <v-list>
-                <Check
-                    v-for="(check, index) in checks"
+                <Alert
+                    v-for="(check, index) in alerts"
                     :key="index"
                     :project-name="name"
                     :data="check"
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-    import Check from "./Check.vue";
+    import Alert from "./Alert.vue";
 
     export default {
         name: "Project",
@@ -63,12 +63,12 @@
         props: ["name", "hidden"],
 
         components: {
-            Check,
+            Alert,
         },
 
         data: () => ({
-            checks: [],
-            loadChecks: true,
+            alerts: [],
+            loadAlerts: true,
             loadRemove: false,
         }),
 
@@ -88,14 +88,14 @@
             },
 
             async fixed (index) {
-                this.checks.splice(index, 1, {
+                this.alerts.splice(index, 1, {
                     message: "Fixed",
                     isFixable: false,
                     priority: 0,
                 });
 
                 setTimeout(() => {
-                    this.checks.splice(index, 1);
+                    this.alerts.splice(index, 1);
                 }, 1000);
             }
         },
@@ -103,8 +103,8 @@
         async mounted () {
             await new Promise(resolve => setTimeout(() => resolve(), 2000));
             const result = await fetch(`/check?name=${this.name}`);
-            this.checks = await result.json();
-            this.loadChecks = false;
+            this.alerts = await result.json();
+            this.loadAlerts = false;
         },
     };
 </script>

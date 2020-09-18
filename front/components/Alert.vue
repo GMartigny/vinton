@@ -55,10 +55,10 @@
         methods: {
             async fix () {
                 this.isLoading = true;
-                await fetch(`/fix?plugin=${this.data.id}&name=${this.projectName}`);
-                this.$emit("fixed")
+                await fetch(`/fix?name=${this.projectName}&plugin=${this.data.name}&message=${this.data.message}`);
+                this.$emit("fixed");
                 this.isLoading = false;
-            }
+            },
         },
     };
 </script>

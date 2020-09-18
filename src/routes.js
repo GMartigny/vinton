@@ -40,13 +40,15 @@ module.exports = (root, plugins) => ({
      */
     async check ({ name }) {
         const promises = Object.keys(plugins)
-            .map(id => (async () => {
-                const result = await plugins[id]?.check(name);
+            .map(pluginName => (async () => {
+                const result = await plugins?.[pluginName]?.check(name);
                 return (Array.isArray(result) ? result : [result])
-                    .filter(check => check)
-                    .map(check => ({
-                        id,
-                        ...check,
+                    .filter(alert => alert)
+                    .map(({ message, priority, isFixable }) => ({
+                        name: pluginName,
+                        message: message.toString(),
+                        priority: priority.valueOf(),
+                        isFixable: Boolean(isFixable),
                     }));
             })());
         const results = await Promise.all(promises);
@@ -59,8 +61,8 @@ module.exports = (root, plugins) => ({
      * Fix
      * @return {Promise}
      */
-    fix ({ plugin, name }) {
-        return plugins[plugin]?.fix?.(name);
+    fix ({ plugin, name, message }) {
+        return plugins[plugin]?.fix?.(name, message);
     },
 
     /**

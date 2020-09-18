@@ -1,10 +1,10 @@
 /**
  * @typedef {Object} Priorities
- * @prop {number} OK -
- * @prop {number} URGENT -
- * @prop {number} WARNING -
- * @prop {number} INFOS -
- * @prop {number} NONE -
+ * @prop {number} OK - Displayed as success, good behavior (should only be used when users expect a green light)
+ * @prop {number} URGENT - Strong highlight, danger or very bad practice
+ * @prop {number} WARNING - Warn the user, something is wrong
+ * @prop {number} INFOS - Basic highlight, give some information
+ * @prop {number} NONE - No highlight, just give some insights
  */
 /**
  * Enumeration of priorities

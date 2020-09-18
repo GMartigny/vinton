@@ -3,19 +3,21 @@ const del = require("delete").promise;
 
 /**
  * @typedef {Object} API
- * @prop {Function} ls -
- * @prop {Function} check -
- * @prop {Function} rm -
+ * @prop {Function} ls - List all projects
+ * @prop {Function} check - Run all plugins check against projects
+ * @prop {Function} fix - Ask for a project being fixed
+ * @prop {Function} rm - Remove a project
  */
 /**
  * @typedef {Object} VintonPlugin
- * @prop {Promise<Array<string>>} check -
- * @prop {Promise} [fix] -
+ * @prop {string} name - Unique name of this plugin
+ * @prop {Function} check - Function to check a project
+ * @prop {Function} [fix] - Function to fix a project
  */
 /**
  * Get all routes
- * @param {string} root -
- * @param {Object<VintonPlugin>} plugins -
+ * @param {string} root - Root directory
+ * @param {Object<VintonPlugin>} plugins - Set of plugins
  * @return {API}
  */
 module.exports = (root, plugins) => ({

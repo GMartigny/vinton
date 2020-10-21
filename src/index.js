@@ -2,6 +2,7 @@
 
 const { cosmiconfig } = require("cosmiconfig");
 const open = require("open");
+const validCommands = require("./commands");
 const getRoutes = require("./routes");
 const startServer = require("./start-server");
 const Vinton = require("./export");
@@ -23,6 +24,9 @@ const logger = (message, type = logger.types.log) => {
         case logger.types.warn:
             console.warn(message);
             break;
+        case logger.types.error:
+            console.error(message);
+            break;
         case logger.types.debug:
             if (verbose) {
                 console.debug(message);
@@ -31,15 +35,30 @@ const logger = (message, type = logger.types.log) => {
     }
 };
 logger.types = {
+    error: "error",
     warn: "warn",
     log: "log",
     debug: "debug",
 };
 
 (async () => {
+    const args = process.argv.slice(2);
+    const command = args[0];
+
+    if (validCommands[command]) {
+        try {
+            const message = await validCommands[command](logger, args.slice(1));
+            logger(message);
+        }
+        catch (error) {
+            logger(error.message, logger.types.error);
+        }
+        process.exit();
+    }
+
     logger("Vinton is starting ...");
 
-    const port = 1805;
+    const port = 3994;
     const startingDir = process.cwd();
 
     const result = await explorer.search();
@@ -65,15 +84,8 @@ logger.types = {
         .forEach(plugin => pluginsMap[plugin.name] = plugin);
     const routes = getRoutes(startingDir, pluginsMap);
 
-    const arg = process.argv[2];
-    if (arg?.length) {
-        logger(await pluginsMap[arg]?.check(...process.argv.slice(3)));
-        // console.log(await routes[arg](...process.argv.slice(3)));
-    }
-    else {
-        startServer(port, routes);
-        open(`http://localhost:${port}`);
+    startServer(port, routes);
+    open(`http://localhost:${port}`);
 
-        logger("Type ^C to exit.");
-    }
+    logger("Type ^C to exit.");
 })();

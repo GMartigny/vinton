@@ -19,6 +19,46 @@ If you want to create a new plugin, please follow the examples and tell us about
 
 ## Usage
 
-    cd workspace
+    cd /workspace
     vinton
 
+### Commands
+
+#### init
+
+    vinton init
+
+This will create a new empty configuration file.
+
+#### help
+
+    vinton help
+
+Display informations about the CLI and the possible commands.
+
+#### version
+
+    vinton version
+
+Display the current vinton version.
+
+#### add
+
+    vinton add <plugin> <plugin> ...
+
+Install plugins and add them to the configuration file.
+
+alias: `install`
+
+#### remove
+
+    vinton remove <plugin> <plugin> ...
+
+Uninstall plugins and remove them from the configuration file.
+
+alias: `rm`, `uninstall`
+
+
+## License
+
+[MIT](license)

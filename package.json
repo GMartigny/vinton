@@ -1,7 +1,9 @@
 {
     "name": "vinton",
-    "version": "0.2.2",
-    "bin": "./src/index.js",
+    "version": "0.3.0",
+    "bin": {
+        "vinton": "src/index.js"
+    },
     "description": "Global project manager",
     "keywords": [
         "GUI",

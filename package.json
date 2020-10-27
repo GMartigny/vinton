@@ -30,6 +30,9 @@
         "type": "git",
         "url": "git+https://github.com/GMartigny/vinton.git"
     },
+    "funding": {
+        "url": "https://github.com/GMartigny/vinton?sponsor=1"
+    },
     "bugs": {
         "url": "https://github.com/GMartigny/vinton/issues"
     },
